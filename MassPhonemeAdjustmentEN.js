@@ -1,6 +1,6 @@
 function getClientInfo() {
   return {
-    "name": "Vowel-Consonant Mass Adjustment",
+    "name": "Vowel-Consonant Mass Adjustment (EN)",
     "category": "Fyre's Scripts",
     "author": "Fyrebreak",
     "versionNumber": 1,
@@ -18,7 +18,7 @@ function operation() {
   }
   var vowelBase = ["aa", "ae", "ah", "ao", "aw", "ax", "ay", "eh", "er", "ey", "ih", "iy", "ow", "oy", "uh", "uw"];
   var consoBase = ["b", "ch", "d", "dx", "dr", "dh", "f", "g", "hh", "jh", "k", "l", "m", "n", "ng", "p", "r", "s", "sh", "t", "tr", "th", "v", "w", "y", "z", "zh"];
-  var silentBase = ["q", "dw", "tw", "cl", "pau", "sil", "br"];
+  var silentBase = ["q", "dw", "tw", "cl", "pau", "sil", "br", "br1", "br2", "br3", "br4", "br5", "br6", "br7", "br8", "brl1", "brl2", "brl3", "brl4", "brl5", "brl6", "brl7", "brl8"];
 
   var currentGroupRef = SV.getMainEditor().getCurrentGroup();
   var groupPhonemes = SV.getPhonemesForGroup(currentGroupRef);
