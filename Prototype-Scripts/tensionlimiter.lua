@@ -68,7 +68,7 @@ function main()
                     param:add(points[j][1], result.answers.mintension)
                 end
             param:add(startPos, startValue)
-            param:add(endPos+1, endValue)
+            param:add(endPos, endValue)
             end
             local startValue = param:get(startPos)
             local postValue = param:get(endPos+1)

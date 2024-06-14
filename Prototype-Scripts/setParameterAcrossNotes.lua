@@ -15,29 +15,31 @@ function main()
         return
     end
     local startPosition = selection[1]:getOnset()
-    
+
     -- local startPositionBlicks = SV:getProject():getTimeAxis():getBlickFromSeconds(startPositionSecs)
     local group = selection[1]:getParent()
     local params = {"pitchDelta", "vibratoEnv", "loudness", "tension", "breathiness", "voicing", "gender", "toneShift"}
     local observedValues = {}
-    
+
     for i=1,#params do
         local param = group:getParameter(params[i])
         local value = param:get(startPosition)
         table.insert(observedValues, value)
     end
-    
+
+
+
     local dialog = {
         title = "Set Parameter Value Across Notes",
-        message = "Set a value that will be applied to all notes in the selection. Default values are the first observed value in the notes you selected.",
+        message = "Default values are the first observed value in the notes you selected.",
         buttons = "OkCancel",
         widgets = {
-            {
-                name = "pitchEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Pitch",
-                default = false
-            },    
+            -- {
+            --     name = "pitchEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Pitch",
+            --     default = false
+            -- },
             {
                 name = "pitchValue",
                 type = "Slider",
@@ -47,12 +49,12 @@ function main()
                 maxValue = 1200,
                 default = observedValues[1]
             },
-            {
-                name = "vibratoEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Vibrato",
-                default = false
-            },
+            -- {
+            --     name = "vibratoEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Vibrato",
+            --     default = false
+            -- },
             {
                 name = "vibratoValue",
                 type = "Slider",
@@ -63,12 +65,12 @@ function main()
                 default = observedValues[2]
             }
             ,
-            {
-                name = "loudnessEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Loudness",
-                default = false
-            },
+            -- {
+            --     name = "loudnessEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Loudness",
+            --     default = false
+            -- },
             {
                 name = "loudnessValue",
                 type = "Slider",
@@ -78,12 +80,12 @@ function main()
                 maxValue = 12,
                 default = observedValues[3]
             },
-            {
-                name = "tensionEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Tension",
-                default = false
-            },
+            -- {
+            --     name = "tensionEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Tension",
+            --     default = false
+            -- },
             {
                 name = "tensionValue",
                 type = "Slider",
@@ -93,12 +95,12 @@ function main()
                 maxValue = 2,
                 default = observedValues[4]
             },
-            {
-                name = "breathinessEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Breathiness",
-                default = false
-            },
+            -- {
+            --     name = "breathinessEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Breathiness",
+            --     default = false
+            -- },
             {
                 name = "breathinessValue",
                 type = "Slider",
@@ -108,12 +110,12 @@ function main()
                 maxValue = 2,
                 default = observedValues[5]
             },
-            {
-                name = "voicingEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Voicing",
-                default = false
-            },
+            -- {
+            --     name = "voicingEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Voicing",
+            --     default = false
+            -- },
             {
                 name = "voicingValue",
                 type = "Slider",
@@ -123,12 +125,12 @@ function main()
                 maxValue = 1,
                 default = observedValues[6]
             },
-            {
-                name = "genderEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Gender",
-                default = false
-            },
+            -- {
+            --     name = "genderEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Gender",
+            --     default = false
+            -- },
             {
                 name = "genderValue",
                 type = "Slider",
@@ -138,12 +140,12 @@ function main()
                 maxValue = 2,
                 default = observedValues[7]
             },
-            {
-                name = "toneShiftEnable",
-                type=  "CheckBox",
-                text = "Check to Adjust Tone Shift",
-                default = false
-            },
+            -- {
+            --     name = "toneShiftEnable",
+            --     type=  "CheckBox",
+            --     text = "Check to Adjust Tone Shift",
+            --     default = false
+            -- },
             {
                 name = "toneShiftValue",
                 type = "Slider",
@@ -165,7 +167,7 @@ function main()
          }
         }
     local result = SV:showCustomDialog(dialog)
-    
+
     -- storing results in tables, so we can iterate through them
 
     local setValues = {}
@@ -178,29 +180,58 @@ function main()
     table.insert(setValues, result.answers.voicingValue)
     table.insert(setValues, result.answers.genderValue)
     table.insert(setValues, result.answers.toneShiftValue)
+    for i=1,#params do
+        if setValues[i] == observedValues[i] then
+            setCheckboxes[i] = false
+        else
+            setCheckboxes[i] = true
+        end
+    end
 
-    table.insert(setCheckboxes, result.answers.pitchEnable)
-    table.insert(setCheckboxes, result.answers.vibratoEnable)
-    table.insert(setCheckboxes, result.answers.loudnessEnable)
-    table.insert(setCheckboxes, result.answers.tensionEnable)
-    table.insert(setCheckboxes, result.answers.breathinessEnable)
-    table.insert(setCheckboxes, result.answers.voicingEnable)
-    table.insert(setCheckboxes, result.answers.genderEnable)
-    table.insert(setCheckboxes, result.answers.toneShiftEnable)
-    
+
+    -- table.insert(setCheckboxes, result.answers.pitchEnable)
+    -- table.insert(setCheckboxes, result.answers.vibratoEnable)
+    -- table.insert(setCheckboxes, result.answers.loudnessEnable)
+    -- table.insert(setCheckboxes, result.answers.tensionEnable)
+    -- table.insert(setCheckboxes, result.answers.breathinessEnable)
+    -- table.insert(setCheckboxes, result.answers.voicingEnable)
+    -- table.insert(setCheckboxes, result.answers.genderEnable)
+    -- table.insert(setCheckboxes, result.answers.toneShiftEnable)
+
     local easeFactor = result.answers.easeFactor
-
+    --local startEndDetect = {false, false}
+    -- startEndDetect is a table that stores whether the note has a note right next to its start, and its end
+    --SV:showMessageBox("Showing startEndDetect", "Start: " .. tostring(startEndDetect[1]) .. "\nEnd: " .. tostring(startEndDetect[2]))
     if result.status then
-        for i=1,#selection do
-            for j=1,#params do
-                if setCheckboxes[j] then
-                    if selection[i+1] and selection[i]:getEnd() == selection[i+1]:getOnset() then
-                        SV:showMessageBox("Note", "Consecutive notes\n")
-                        setConstantParameterOpen(selection[i+1], params[j], setValues[j], easeFactor)
-                    else 
-                        SV:showMessageBox("Note", "Non-consecutive notes")
-                        setConstantParameterClose(selection[i], params[j], setValues[j], easeFactor)
+        for j=1, #params do
+            if setCheckboxes[j] then
+                local i = 1
+                while i<=#selection do
+                    ---SV:showMessageBox("Current Index for i", i )
+                    local pointer = i
+                    if i==1 or selection[i]:getOnset() ~= selection[i-1]:getEnd() then
+                        while (pointer+1)<=#selection and selection[pointer]:getEnd() == selection[pointer+1]:getOnset() do
+                            --SV:showMessageBox("Current index for Pointer", pointer )
+                            pointer = pointer + 1
+                        end
+                    end   
+                    local startpoint = selection[i]
+                    local endpoint = selection[pointer]
+                    local parameter = selection[i]:getParent():getParameter(params[j])
+                    local value = setValues[j]
+                    local startEasePeriod = easeFactor * (startpoint:getEnd() - startpoint:getOnset())
+                    local endEasePeriod = easeFactor * (endpoint:getEnd() - endpoint:getOnset())
+                    local startEaseTime = startpoint:getOnset() - startEasePeriod
+                    local endEaseTime = endpoint:getEnd() + endEasePeriod
+                    local pointsArray = parameter:getPoints(startEaseTime, endEaseTime)
+                    for i=1,#pointsArray do
+                        parameter:remove(pointsArray[i][1])
                     end
+                    parameter:add(startEaseTime, parameter:get(startEaseTime))
+                    parameter:add(endEaseTime, parameter:get(endEaseTime))
+                    parameter:add(startpoint:getOnset(), value)
+                    parameter:add(endpoint:getEnd(), value)
+                    i = pointer + 1
                 end
             end
         end
@@ -212,61 +243,59 @@ function main()
     SV:finish()
 end
 
-function setConstantParameterClose(note, parameter, value, easeFactor)
-    -- SV:showMessageBox("Current Parameter", parameter)
-    local group = note:getParent()
-    local param = group:getParameter(parameter)
-    -- setting transitions and defining the ease period
-    local noteStart = note:getOnset()
-    local noteEnd = note:getEnd()
-    local noteLength = noteEnd - noteStart
-    local easePeriod = easeFactor * noteLength
-    local easeStart = note:getOnset() - easePeriod
-    local easeEnd = note:getEnd() + easePeriod
-    -- SV:showMessageBox("Ease Period", easePeriod .. "\n" .. easeStart .. "\n" .. easeEnd .. "\n" .. noteStart .. "\n" .. noteEnd)
-    -- removing all prior automation points in the ease period
-    local pointsArray = param:getPoints(easeStart, easeEnd)
-    for i=1,#pointsArray do
-        param:remove(pointsArray[i][1])
-    end
-    -- setting the value at the onset and end of the note
-    -- SV:showMessageBox("Value", param:get(noteStart))
-    SV:showMessageBox("Value", "Add value " .. param:get(easeStart) .. " to " .. easeStart)
-    param:add(easeStart, param:get(easeStart))
-    SV:showMessageBox("Value", "Add value " .. param:get(easeEnd) .. " to " .. easeEnd)
-    param:add(easeEnd, param:get(easeEnd))
-    SV:showMessageBox("Value", "Add value " .. value .. " to " .. noteStart)
-    param:add(noteStart, value)
-    SV:showMessageBox("Value", "Add value " .. value .. " to " .. noteEnd)
-    param:add(noteEnd, value)
-end
+-- function setConstantParameter(note, parameter, value, easeFactor, startEndDetect)
+--     -- SV:showMessageBox("Current Parameter", parameter)
+--     local group = note:getParent()
+--     local param = group:getParameter(parameter)
+--     -- setting transitions and defining the ease period
+--     local noteStart = note:getOnset()
+--     local noteEnd = note:getEnd()
+--     local noteLength = noteEnd - noteStart
+--     local easePeriod = easeFactor * noteLength
+--     local easeStart = note:getOnset() - easePeriod
+--     local easeEnd = note:getEnd() + easePeriod
+--     -- SV:showMessageBox("Ease Period", easePeriod .. "\n" .. easeStart .. "\n" .. easeEnd .. "\n" .. noteStart .. "\n" .. noteEnd)
 
-function setConstantParameterOpen(note, parameter, value, easeFactor)
-    -- SV:showMessageBox("Current Parameter", parameter)
-    local group = note:getParent()
-    local param = group:getParameter(parameter)
-    -- setting transitions and defining the ease period
-    local noteStart = note:getOnset()
-    local noteEnd = note:getEnd()
-    local noteLength = noteEnd - noteStart
-    local easePeriod = easeFactor * noteLength
-    local easeStart = note:getOnset() - easePeriod
-    local easeEnd = note:getEnd() + easePeriod
-    -- SV:showMessageBox("Ease Period", easePeriod .. "\n" .. easeStart .. "\n" .. easeEnd .. "\n" .. noteStart .. "\n" .. noteEnd)
-    -- removing all prior automation points in the ease period
-    local pointsArray = param:getPoints(easeStart, easeEnd)
-    for i=1,#pointsArray do
-        param:remove(pointsArray[i][1])
-    end
-    -- setting the value at the onset and end of the note
-    -- SV:showMessageBox("Value", param:get(noteStart))
-    SV:showMessageBox("Value", "Add value " .. param:get(easeStart) .. " to " .. easeStart)
-    param:add(easeStart, param:get(easeStart))
-    --SV:showMessageBox("Value", "Add value " .. param:get(easeEnd) .. " to " .. easeEnd)
-   --  param:add(easeEnd, param:get(easeEnd))
-    SV:showMessageBox("Value", "Add value " .. value .. " to " .. noteStart)
-    param:add(noteStart, value)
-    SV:showMessageBox("Value", "Add value " .. value .. " to " .. noteEnd)
-    param:add(noteEnd, value)
-end
+--     -- removing all prior automation points in the desired period
+--     local periodStart, periodEnd
+--     if not startEndDetect[1] then
+--         periodStart = easeStart
+--     else
+--         periodStart = noteStart
+--     end
+--     if not startEndDetect[2] then
+--         periodEnd = easeEnd
+--     else
+--         periodEnd = noteEnd
+--     end
+
+--     local pointsArray = param:getPoints(periodStart, periodEnd)
+--     for i=1,#pointsArray do
+--         SV:showMessageBox("Removing Points", "Checkpoint")
+--         param:remove(pointsArray[i][1])
+--     end
+
+--     -- setting the value at the onset and end of the note
+--     -- SV:showMessageBox("Value", param:get(noteStart))
+
+--     -- handling start and end condition
+--     local initialEaseValues = {param:get(easeStart), param:get(easeEnd)}
+--     if not startEndDetect[1] then
+--         -- SV:showMessageBox("Value", "Add value " .. value .. " to " .. easeStart)
+--         param:add(easeStart, initialEaseValues[1])
+--         param:add(noteStart, value)
+--     else
+--         -- SV:showMessageBox("Value", "Add value " .. value .. " to " .. noteStart)
+--         param:add(noteStart, value)
+--     end
+
+--     if not startEndDetect[2] then
+--         -- SV:showMessageBox("Value", "Add value " .. value .. " to " .. easeEnd)
+--         param:add(easeEnd, initialEaseValues[2])
+--         param:add(noteEnd, value)
+--     else
+--         -- SV:showMessageBox("Value", "Add value " .. value .. " to " .. noteEnd)
+--         param:add(noteEnd, value)
+--     end
+-- end
 
